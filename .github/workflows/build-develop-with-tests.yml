@@ -21,4 +21,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Execute Tests (Unit + Integration)
-        run: mvn clean verify --file pom.xml --no-transfer-progress
+        run: mvn clean verify -Dspring.profiles.active=test --file pom.xml --no-transfer-progress
