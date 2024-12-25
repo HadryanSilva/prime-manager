@@ -1,0 +1,1 @@
+CREATE SCHEMA IF NOT EXISTS prime_db;
