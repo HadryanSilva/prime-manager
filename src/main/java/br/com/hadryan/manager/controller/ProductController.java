@@ -19,7 +19,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> findAll(@RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "10") int size) {
+                                                          @RequestParam(defaultValue = "5") int size) {
         var response = productService.findAll(page, size);
         return ResponseEntity.ok(response);
     }

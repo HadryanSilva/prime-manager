@@ -3,6 +3,8 @@ package br.com.hadryan.manager.mapper.response;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ProductResponse {
@@ -18,5 +20,7 @@ public class ProductResponse {
     private Double buyPrice;
 
     private Double sellPrice;
+
+    private LocalDateTime createdAt;
 
 }
