@@ -40,6 +40,7 @@ public class ProductService {
         return productMapper.productToPost(product);
     }
 
+    @Transactional
     public ProductResponse save(ProductRequest request) {
         log.info("Saving product: {}", request.getName());
         var productToSave = productMapper.postToProduct(request);

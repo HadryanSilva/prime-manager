@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
@@ -22,3 +25,27 @@ jobs:
           cache: maven
       - name: Execute Tests (Unit + Integration)
         run: mvn clean verify -Dspring.profiles.active=test --file pom.xml --no-transfer-progress
+      - name: Bump version in pom.xml
+        if: success()
+        run: |
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          BASE_VERSION=$(echo $CURRENT_VERSION | sed 's/-SNAPSHOT//')
+          MAJOR=$(echo $BASE_VERSION | cut -d. -f1)
+          MINOR=$(echo $BASE_VERSION | cut -d. -f2)
+          PATCH=$(echo $BASE_VERSION | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-SNAPSHOT"
+          mvn versions:set -DnewVersion=$NEW_VERSION
+          mvn versions:commit
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+      - name: Commit and Push Changes
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin
+          git checkout ${{ github.head_ref }}
+          git add pom.xml
+          git commit -m "Bump version to $NEW_VERSION"
+          git push origin ${{ github.head_ref }}
